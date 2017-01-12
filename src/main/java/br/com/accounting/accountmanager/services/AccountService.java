@@ -29,10 +29,15 @@ public class AccountService {
     public Account save(Account account) {
         return repository.save(account);
     }
+    
+//    @Transactional
+//    public void delete(int id) {
+//        repository.deleteById(id);
+//    }
 
     //lista todas as contas do usuário
-    public List<Account> findByOwner(Owner owner) {
-        return repository.findByOwner(owner);
+    public List<Account> findByOwner(Integer ownerId) {
+        return repository.findByOwnerId(ownerId);
     }
 
     //retorna uma determinada conta por ID

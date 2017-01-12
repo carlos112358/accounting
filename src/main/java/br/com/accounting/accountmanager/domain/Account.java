@@ -1,5 +1,7 @@
 package br.com.accounting.accountmanager.domain;
 
+import br.com.accounting.accountmanager.views.View;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -29,6 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a"),
     @NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id = :id"),
+    @NamedQuery(name = "Account.findByOwnerId", query = "SELECT a FROM Account a WHERE a.owner.id = :id"),
     @NamedQuery(name = "Account.findByBalance", query = "SELECT a FROM Account a WHERE a.balance = :balance")})
 public class Account implements Serializable {
 
@@ -37,14 +40,16 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
+//    @JsonView(View.Summary.class)
     private Integer id;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "balance")
+//    @JsonView(View.Summary.class)
     private Float balance;
     @OneToMany(mappedBy = "accountId")
     private Collection<Entry> entryCollection;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")
-    private AccountHistory accounthistory;
+    private AccountHistory accountHistory;
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     @ManyToOne
     private Owner owner;
@@ -81,12 +86,12 @@ public class Account implements Serializable {
         this.entryCollection = entryCollection;
     }
 
-    public AccountHistory getAccounthistory() {
-        return accounthistory;
+    public AccountHistory getAccountHistory() {
+        return accountHistory;
     }
 
-    public void setAccounthistory(AccountHistory accounthistory) {
-        this.accounthistory = accounthistory;
+    public void setAccountHistory(AccountHistory accountHistory) {
+        this.accountHistory = accountHistory;
     }
 
     public Owner getOwner() {

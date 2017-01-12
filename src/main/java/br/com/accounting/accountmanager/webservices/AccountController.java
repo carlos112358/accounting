@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -45,18 +44,18 @@ public class AccountController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    //TODO: webservice que cria conta
     @RequestMapping(value = "/account", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Account> createAccount(@RequestBody Account account) {
         Account newAccount = accountService.save(account);
         return new ResponseEntity(newAccount, HttpStatus.OK);
     }
 
-    //TODO: webservice que cancela conta
-    @RequestMapping(value = "/account/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteAccount(@PathVariable("id") int id) {
-        return new ResponseEntity(HttpStatus.OK);
-    }
+    //Webservice que deleta a conta? melhor não mas tá aí pra quem quiser
+//    @RequestMapping(value = "/account/{id}", method = RequestMethod.DELETE)
+//    public ResponseEntity deleteAccount(@PathVariable("id") int id) {
+//        accountService.delete(id);
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
 
     //TODO: webservice que deposita/saca da conta(entries com valor negativo representam um saque)
     @RequestMapping(value = "/account/{id}", method = RequestMethod.POST)
