@@ -14,6 +14,6 @@ public interface AccountRepository extends GenericRepository <Account, Integer> 
     List<Account> findByOwnerId(Integer id);
     //void deleteById(Integer id);//probably should never be used
     
-//    @Query("select from Account a where a.accountHistory.changeDate = ?1")
-//    Integer selectAccountBalanceByDate(Date firstName);
+//    @Query("select from Account a where a.accountHistory.changeDate <= ?1")
+//    Integer selectAccountBalanceByDate(Date date);
 }

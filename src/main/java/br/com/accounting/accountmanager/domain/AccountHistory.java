@@ -1,18 +1,19 @@
 package br.com.accounting.accountmanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -31,22 +32,37 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AccountHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
+    @Column(name = "id")
+    private Integer id;
+    
+    @Basic(optional = false)
+//    @NotNull
     @Column(name = "account_id")
     private Integer accountId;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "balance")
     private Float balance;
     @Column(name = "change_date")
-    @Temporal(TemporalType.TIMESTAMP)
+//    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss", timezone="Brazil/East")
     private Date changeDate;
     @JoinColumn(name = "account_id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Account account;
 
     public AccountHistory() {
+    }
+    
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public AccountHistory(Integer accountId) {

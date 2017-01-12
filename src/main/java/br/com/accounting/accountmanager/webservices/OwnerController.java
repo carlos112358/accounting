@@ -3,8 +3,6 @@ package br.com.accounting.accountmanager.webservices;
 import br.com.accounting.accountmanager.domain.Account;
 import br.com.accounting.accountmanager.domain.Owner;
 import br.com.accounting.accountmanager.services.AccountService;
-import br.com.accounting.accountmanager.views.View;
-import com.fasterxml.jackson.annotation.JsonView;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

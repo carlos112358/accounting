@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Account.findByBalance", query = "SELECT a FROM Account a WHERE a.balance = :balance")})
 public class Account implements Serializable {
 
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,12 +49,14 @@ public class Account implements Serializable {
     private Float balance;
     @OneToMany(mappedBy = "accountId")
     private Collection<Entry> entryCollection;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")
-    private AccountHistory accountHistory;
+    
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     @ManyToOne
     private Owner owner;
 
+    @OneToMany(mappedBy = "accountId")
+    private Collection<AccountHistory> accountHistoryCollection;
+    
     public Account() {
     }
 
@@ -84,14 +87,6 @@ public class Account implements Serializable {
 
     public void setEntryCollection(Collection<Entry> entryCollection) {
         this.entryCollection = entryCollection;
-    }
-
-    public AccountHistory getAccountHistory() {
-        return accountHistory;
-    }
-
-    public void setAccountHistory(AccountHistory accountHistory) {
-        this.accountHistory = accountHistory;
     }
 
     public Owner getOwner() {
@@ -125,6 +120,15 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "br.com.accounting.accountmanager.domain.Account[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<AccountHistory> getAccountHistoryCollection() {
+        return accountHistoryCollection;
+    }
+
+    public void setAccountHistoryCollection(Collection<AccountHistory> accountHistoryCollection) {
+        this.accountHistoryCollection = accountHistoryCollection;
     }
     
 }

@@ -5,9 +5,10 @@
  */
 package br.com.accounting.accountmanager.services;
 
+import br.com.accounting.accountmanager.daos.AccountHistoryRepository;
 import br.com.accounting.accountmanager.daos.AccountRepository;
 import br.com.accounting.accountmanager.domain.Account;
-import br.com.accounting.accountmanager.domain.Owner;
+import br.com.accounting.accountmanager.domain.AccountHistory;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -23,8 +24,10 @@ public class AccountService {
 
     @Autowired
     private AccountRepository repository;
-    //cria/atualiza uma conta
-
+    @Autowired
+    private AccountHistoryRepository historyRepository;
+    
+    //cria/atualiza conta
     @Transactional
     public Account save(Account account) {
         return repository.save(account);
@@ -50,6 +53,10 @@ public class AccountService {
             //retornando um objeto Account com id -1 em caso de erro.
             return new Account(-1);
         }
+    }
+
+    public List<AccountHistory> getAccountHistory(int id) {
+        return historyRepository.findByAccountId(id);
     }
 
 }

@@ -72,6 +72,7 @@ public class AccountController {
     //TODO: webservice que mostra o extrato por períodos
     @RequestMapping(value = "/account/{id}/history", method = RequestMethod.GET)
     public ResponseEntity<List<AccountHistory>> getAccountHistory(@PathVariable("id") int id) {
-        return new ResponseEntity(HttpStatus.OK);
+        List<AccountHistory> historyList = accountService.getAccountHistory(id);
+        return new ResponseEntity(historyList, HttpStatus.OK);
     }
 }
