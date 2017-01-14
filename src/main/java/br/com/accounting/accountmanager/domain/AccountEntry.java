@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "entry")
 @NamedQueries({
-    @NamedQuery(name = "Entry.findAll", query = "SELECT e FROM Entry e"),
-    @NamedQuery(name = "Entry.findById", query = "SELECT e FROM Entry e WHERE e.id = :id"),
-    @NamedQuery(name = "Entry.findByQuantity", query = "SELECT e FROM Entry e WHERE e.quantity = :quantity"),
-    @NamedQuery(name = "Entry.findByChargedDate", query = "SELECT e FROM Entry e WHERE e.chargedDate = :chargedDate"),
-    @NamedQuery(name = "Entry.findByBookingDate", query = "SELECT e FROM Entry e WHERE e.bookingDate = :bookingDate")})
+    @NamedQuery(name = "AccountEntry.findAll", query = "SELECT e FROM AccountEntry e"),
+    @NamedQuery(name = "AccountEntry.findById", query = "SELECT e FROM AccountEntry e WHERE e.id = :id"),
+    @NamedQuery(name = "AccountEntry.findByQuantity", query = "SELECT e FROM AccountEntry e WHERE e.quantity = :quantity"),
+    @NamedQuery(name = "AccountEntry.findByChargedDate", query = "SELECT e FROM AccountEntry e WHERE e.chargedDate = :chargedDate"),
+    @NamedQuery(name = "AccountEntry.findByBookingDate", query = "SELECT e FROM AccountEntry e WHERE e.bookingDate = :bookingDate")})
 public class AccountEntry implements Serializable {
 
     @OneToMany(mappedBy = "entry")
