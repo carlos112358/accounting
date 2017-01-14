@@ -42,7 +42,7 @@ public class Account implements Serializable {
 //    @JsonView(View.Summary.class)
     private Float balance;
     @OneToMany(mappedBy = "accountId")
-    private Collection<Entry> entryCollection;
+    private Collection<AccountEntry> entryCollection;
     
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     @ManyToOne
@@ -75,11 +75,11 @@ public class Account implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Entry> getEntryCollection() {
+    public Collection<AccountEntry> getEntryCollection() {
         return entryCollection;
     }
 
-    public void setEntryCollection(Collection<Entry> entryCollection) {
+    public void setEntryCollection(Collection<AccountEntry> entryCollection) {
         this.entryCollection = entryCollection;
     }
 

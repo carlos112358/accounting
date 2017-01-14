@@ -39,9 +39,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class AccountEntry implements Serializable {
 
     @OneToMany(mappedBy = "entry")
-    private Collection<Transaction> transactionCollection;
-    @OneToMany(mappedBy = "counterentry")
-    private Collection<Transaction> transactionCollection1;
+    private Collection<AccountTransaction> transactionCollection;
+    @OneToMany(mappedBy = "counterEntry")
+    private Collection<AccountTransaction> transactionCollection1;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -60,7 +60,10 @@ public class AccountEntry implements Serializable {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne
     private Account accountId;
-
+    
+    @Column(name = "account_balance")
+    private Float accountBalance;
+    
     public AccountEntry() {
     }
 
@@ -134,21 +137,29 @@ public class AccountEntry implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Transaction> getTransactionCollection() {
+    public Collection<AccountTransaction> getTransactionCollection() {
         return transactionCollection;
     }
 
-    public void setTransactionCollection(Collection<Transaction> transactionCollection) {
+    public void setTransactionCollection(Collection<AccountTransaction> transactionCollection) {
         this.transactionCollection = transactionCollection;
     }
 
     @XmlTransient
-    public Collection<Transaction> getTransactionCollection1() {
+    public Collection<AccountTransaction> getTransactionCollection1() {
         return transactionCollection1;
     }
 
-    public void setTransactionCollection1(Collection<Transaction> transactionCollection1) {
+    public void setTransactionCollection1(Collection<AccountTransaction> transactionCollection1) {
         this.transactionCollection1 = transactionCollection1;
+    }
+
+    public Float getAccountBalance() {
+        return accountBalance;
+    }
+
+    public void setAccountBalance(Float accountBalance) {
+        this.accountBalance = accountBalance;
     }
     
 }

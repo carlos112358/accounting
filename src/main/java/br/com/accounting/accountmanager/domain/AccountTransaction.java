@@ -27,7 +27,7 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Transaction.findAll", query = "SELECT t FROM Transaction t"),
     @NamedQuery(name = "Transaction.findById", query = "SELECT t FROM Transaction t WHERE t.id = :id")})
-public class Transaction implements Serializable {
+public class AccountTransaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,15 +37,15 @@ public class Transaction implements Serializable {
     private Integer id;
     @JoinColumn(name = "entryid", referencedColumnName = "id")
     @ManyToOne
-    private Entry entry;
+    private AccountEntry entry;
     @JoinColumn(name = "counterentryid", referencedColumnName = "id")
     @ManyToOne
-    private Entry counterentry;
+    private AccountEntry counterEntry;
 
-    public Transaction() {
+    public AccountTransaction() {
     }
 
-    public Transaction(Integer id) {
+    public AccountTransaction(Integer id) {
         this.id = id;
     }
 
@@ -57,20 +57,20 @@ public class Transaction implements Serializable {
         this.id = id;
     }
 
-    public Entry getEntry() {
+    public AccountEntry getEntry() {
         return entry;
     }
 
-    public void setEntry(Entry entry) {
+    public void setEntry(AccountEntry entry) {
         this.entry = entry;
     }
 
-    public Entry getCounterentry() {
-        return counterentry;
+    public AccountEntry getCounterEntry() {
+        return counterEntry;
     }
 
-    public void setCounterentry(Entry counterentry) {
-        this.counterentry = counterentry;
+    public void setCounterEntry(AccountEntry counterEntry) {
+        this.counterEntry = counterEntry;
     }
 
     @Override
@@ -83,10 +83,10 @@ public class Transaction implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Transaction)) {
+        if (!(object instanceof AccountTransaction)) {
             return false;
         }
-        Transaction other = (Transaction) object;
+        AccountTransaction other = (AccountTransaction) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

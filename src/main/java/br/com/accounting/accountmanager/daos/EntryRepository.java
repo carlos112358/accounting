@@ -1,11 +1,11 @@
 package br.com.accounting.accountmanager.daos;
 
-import br.com.accounting.accountmanager.domain.Entry;
+import br.com.accounting.accountmanager.domain.AccountEntry;
 
 /**
- * Repository for Entry CRUD operations
+ * Repository for AccountEntry CRUD operations
  *
  * @author Carlos
  */
-public interface EntryRepository extends GenericRepository <Entry, Integer> {
+public interface EntryRepository extends GenericRepository <AccountEntry, Integer> {
 }
