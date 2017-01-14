@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "accounthistory")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "AccountHistory.findAll", query = "SELECT a FROM AccountHistory a"),
     @NamedQuery(name = "AccountHistory.findByAccountId", query = "SELECT a FROM AccountHistory a WHERE a.accountId = :accountId"),
@@ -48,7 +47,7 @@ public class AccountHistory implements Serializable {
     private Float balance;
     @Column(name = "change_date")
 //    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss", timezone="Brazil/East")
+    @JsonFormat(pattern="dd-MM-yyyy hh:mm:ss", timezone="Brazil/East")
     private Date changeDate;
     @JoinColumn(name = "account_id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)

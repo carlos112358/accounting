@@ -4,7 +4,12 @@ import br.com.accounting.accountmanager.domain.Account;
 import br.com.accounting.accountmanager.domain.AccountHistory;
 import br.com.accounting.accountmanager.domain.Entry;
 import br.com.accounting.accountmanager.services.AccountService;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -22,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AccountController {
 
+    private final static String dateFormat = "dd-MM-yyyy";
+    private final static String timeFormat = "hh:mm:ss";
     @Autowired
     private AccountService accountService;
 
@@ -38,10 +46,28 @@ public class AccountController {
     }
 
     //TODO: webservice que mostra o saldo da conta em uma determinada data
-    @RequestMapping(value = "/account/{id}/balance/{date}", method = RequestMethod.GET)
-    public ResponseEntity<AccountHistory> getBallanceAtCertainDate(@PathVariable("id") int id,
-            @PathVariable("date") String date) {
-        return new ResponseEntity(HttpStatus.OK);
+    @RequestMapping(value = "/account/{id}/balance", method = RequestMethod.GET)
+    public ResponseEntity<AccountHistory> getBallanceAtCertainDate(@PathVariable("id") int id, @RequestParam(value = "date") String date, @RequestParam(value = "time", required = false) String time) {
+        String dateTimeFormat = dateFormat;
+        String dateTime = date;
+        
+        if(time!=null) {
+            dateTime += " " + time;
+            dateTimeFormat += " " + timeFormat;
+        }
+        
+        
+        //format must be dd-MM-yyyy hh:mm:ss or only dd-MM-yyyy
+        SimpleDateFormat format = new SimpleDateFormat(dateTimeFormat);
+
+        try {
+            Date data = new Date(format.parse(dateTime).getTime());
+            AccountHistory account = accountService.getAccountBallanceByDate(id, data);
+            return new ResponseEntity(account, HttpStatus.OK);
+        } catch (ParseException ex) {
+            Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, "Parâmetro recebido não é uma data válida");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/account", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,7 +82,6 @@ public class AccountController {
 //        accountService.delete(id);
 //        return new ResponseEntity(HttpStatus.OK);
 //    }
-
     //TODO: webservice que deposita/saca da conta(entries com valor negativo representam um saque)
     @RequestMapping(value = "/account/{id}", method = RequestMethod.POST)
     public ResponseEntity depositIntoAccount(@PathVariable("id") int id, @RequestBody Entry entry) {

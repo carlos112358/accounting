@@ -9,6 +9,7 @@ import br.com.accounting.accountmanager.daos.AccountHistoryRepository;
 import br.com.accounting.accountmanager.daos.AccountRepository;
 import br.com.accounting.accountmanager.domain.Account;
 import br.com.accounting.accountmanager.domain.AccountHistory;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -58,5 +59,11 @@ public class AccountService {
     public List<AccountHistory> getAccountHistory(int id) {
         return historyRepository.findByAccountId(id);
     }
-
+    
+    public AccountHistory getAccountBallanceByDate(int id, Date date) {
+        return historyRepository.findFirstByAccountIdAndChangeDateLessThanOrderByChangeDateDesc(id, date);
+    }
+    
+    
+    
 }

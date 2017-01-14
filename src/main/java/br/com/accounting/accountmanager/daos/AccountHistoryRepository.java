@@ -15,6 +15,8 @@ public interface AccountHistoryRepository extends GenericRepository <AccountHist
     List<AccountHistory> findByAccountId(Integer id);
     
 //    @Modifying
-    @Query("SELECT a FROM AccountHistory a WHERE a.accountId = ?1 AND a.changeDate <= ?2")
+    @Query("SELECT a FROM AccountHistory a WHERE a.accountId = ?1 AND a.changeDate <= ?2 ORDER BY a.changeDate DESC")
     AccountHistory findByDate(Integer id, Date date);
+    
+    AccountHistory findFirstByAccountIdAndChangeDateLessThanOrderByChangeDateDesc(Integer id, Date date);
 }
