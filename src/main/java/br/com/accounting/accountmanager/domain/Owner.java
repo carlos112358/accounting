@@ -7,9 +7,10 @@ package br.com.accounting.accountmanager.domain;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -31,14 +32,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Owner.findByNome", query = "SELECT o FROM Owner o WHERE o.nome = :nome"),
     @NamedQuery(name = "Owner.findByCpf", query = "SELECT o FROM Owner o WHERE o.cpf = :cpf"),
     @NamedQuery(name = "Owner.findByTelefone", query = "SELECT o FROM Owner o WHERE o.telefone = :telefone"),
-    @NamedQuery(name = "Owner.findByEndereco", query = "SELECT o FROM Owner o WHERE o.endereco = :endereco"),
-    @NamedQuery(name = "Owner.findByOwnercol", query = "SELECT o FROM Owner o WHERE o.ownercol = :ownercol")})
+    @NamedQuery(name = "Owner.findByEndereco", query = "SELECT o FROM Owner o WHERE o.endereco = :endereco")})
 public class Owner implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Size(max = 100)
@@ -53,9 +52,7 @@ public class Owner implements Serializable {
     @Size(max = 45)
     @Column(name = "endereco")
     private String endereco;
-    @Size(max = 45)
-    @Column(name = "ownercol")
-    private String ownercol;
+    
     @OneToMany(mappedBy = "owner")
     private Collection<Account> accountCollection;
 
@@ -104,14 +101,6 @@ public class Owner implements Serializable {
 
     public void setEndereco(String endereco) {
         this.endereco = endereco;
-    }
-
-    public String getOwnercol() {
-        return ownercol;
-    }
-
-    public void setOwnercol(String ownercol) {
-        this.ownercol = ownercol;
     }
 
     @XmlTransient
