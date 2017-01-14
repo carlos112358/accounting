@@ -1,5 +1,8 @@
 package br.com.accounting.accountmanager.domain;
 
+import br.com.accounting.accountmanager.views.View;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -35,20 +38,22 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
-//    @JsonView(View.Summary.class)
     private Integer id;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "balance")
-//    @JsonView(View.Summary.class)
     private Float balance;
+    
     @OneToMany(mappedBy = "accountId")
+    @JsonIgnore
     private Collection<AccountEntry> entryCollection;
     
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     @ManyToOne
+    @JsonView(View.Summary.class)
     private Owner owner;
 
     @OneToMany(mappedBy = "accountId")
+    @JsonIgnore
     private Collection<AccountHistory> accountHistoryCollection;
     
     public Account() {
