@@ -21,8 +21,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -37,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AccountEntry.findByQuantity", query = "SELECT e FROM AccountEntry e WHERE e.quantity = :quantity"),
     @NamedQuery(name = "AccountEntry.findByChargedDate", query = "SELECT e FROM AccountEntry e WHERE e.chargedDate = :chargedDate"),
     @NamedQuery(name = "AccountEntry.findByBookingDate", query = "SELECT e FROM AccountEntry e WHERE e.bookingDate = :bookingDate")})
-public class AccountEntry implements Serializable {
+public class AccountEntry implements Serializable, Comparable<AccountEntry> {
 
     @OneToMany(mappedBy = "entry")
     private Collection<AccountTransaction> transactionCollection;
@@ -161,6 +159,17 @@ public class AccountEntry implements Serializable {
 
     public void setAccountBalance(Float accountBalance) {
         this.accountBalance = accountBalance;
+    }
+
+    @Override
+    public int compareTo(AccountEntry o) {
+        if (this.chargedDate.after(o.getChargedDate())) {
+            return 1;
+        } else if (this.chargedDate.before(o.getChargedDate())){
+                return -1;
+        } else {
+            return 0;
+        }
     }
     
 }

@@ -12,11 +12,13 @@ import br.com.accounting.accountmanager.daos.TransactionRepository;
 import br.com.accounting.accountmanager.domain.Account;
 import br.com.accounting.accountmanager.domain.AccountHistory;
 import br.com.accounting.accountmanager.domain.AccountEntry;
+import br.com.accounting.accountmanager.domain.AccountStatement;
 import br.com.accounting.accountmanager.domain.AccountTransaction;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -70,7 +72,7 @@ public class AccountService {
         }
     }
 
-    public Map<String, List<AccountEntry>> getAccountHistory(int id, int period) throws ParseException {
+    public List<AccountStatement> getAccountHistory(int id, int period) throws ParseException {
         Account account = findById(id);
         SimpleDateFormat format2 = new SimpleDateFormat("dd-MM-yyyy", new Locale("pt", "BR"));
         Date endDate = new Date();
@@ -102,7 +104,18 @@ public class AccountService {
                 .sorted(Map.Entry.<String, List<AccountEntry>>comparingByKey())
                 .forEachOrdered(x -> sortedHistoryMap.put(x.getKey(), x.getValue()));
         
-        return sortedHistoryMap;
+        //utilizando a nova estrutura
+        List <AccountStatement> accountStatement= new ArrayList<>();
+        
+        for(String key:sortedHistoryMap.keySet()){
+            AccountStatement statement = new AccountStatement();
+            statement.setEntries(sortedHistoryMap.get(key));
+            statement.retrieveRetrieveData();
+            accountStatement.add(statement);
+        };
+        
+        Collections.reverse(accountStatement);
+        return accountStatement;
     }
 
     //USES ACCOUNT HISTORY

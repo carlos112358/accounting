@@ -3,6 +3,7 @@ package br.com.accounting.accountmanager.webservices;
 import br.com.accounting.accountmanager.domain.Account;
 import br.com.accounting.accountmanager.domain.AccountEntry;
 import br.com.accounting.accountmanager.domain.AccountHistory;
+import br.com.accounting.accountmanager.domain.AccountStatement;
 import br.com.accounting.accountmanager.domain.Owner;
 import br.com.accounting.accountmanager.services.AccountService;
 import br.com.accounting.accountmanager.services.OwnerService;
@@ -122,7 +123,7 @@ public class AccountController {
 
     //TODO: webservice que transfere de uma conta para a outra
     @RequestMapping(value = "/account/{id}/transfer/{account}", method = RequestMethod.POST)
-    public ResponseEntity transferToAccount(@PathVariable("id") int id, @PathVariable("account") int targetAccountId, @RequestParam(value = "quantity") Float quantity) {
+    public ResponseEntity<List<AccountStatement> > transferToAccount(@PathVariable("id") int id, @PathVariable("account") int targetAccountId, @RequestParam(value = "quantity") Float quantity) {
         accountService.transferToAccount(id, targetAccountId, quantity);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -133,7 +134,7 @@ public class AccountController {
         if (period < 0) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        Map<String, List<AccountEntry>> historyList;
+        List<AccountStatement> historyList;
         try {
             historyList = accountService.getAccountHistory(id, period);
             return new ResponseEntity(historyList, HttpStatus.OK);
