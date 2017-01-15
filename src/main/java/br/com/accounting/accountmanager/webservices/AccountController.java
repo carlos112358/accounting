@@ -1,15 +1,20 @@
 package br.com.accounting.accountmanager.webservices;
 
 import br.com.accounting.accountmanager.domain.Account;
+import br.com.accounting.accountmanager.domain.AccountEntry;
 import br.com.accounting.accountmanager.domain.AccountHistory;
-import br.com.accounting.accountmanager.domain.Entry;
+import br.com.accounting.accountmanager.domain.Owner;
 import br.com.accounting.accountmanager.services.AccountService;
+import br.com.accounting.accountmanager.services.OwnerService;
+import br.com.accounting.accountmanager.views.View;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +37,11 @@ public class AccountController {
     private final static String timeFormat = "hh:mm:ss";
     @Autowired
     private AccountService accountService;
-
+    
+    @Autowired
+    private OwnerService ownerService;
+    
+    @JsonView(View.Summary.class)
     @RequestMapping(value = "/account/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Account> getAccount(@PathVariable("id") int id) {
 
@@ -45,7 +54,7 @@ public class AccountController {
         }
     }
 
-    //TODO: webservice que mostra o saldo da conta em uma determinada data
+    //TODO: webservice que mostra o saldo da conta em uma determinada data //using Accounthistory
     @RequestMapping(value = "/account/{id}/balance", method = RequestMethod.GET)
     public ResponseEntity<AccountHistory> getBallanceAtCertainDate(@PathVariable("id") int id, @RequestParam(value = "date") String date, @RequestParam(value = "time", required = false) String time) {
         String dateTimeFormat = dateFormat;
@@ -55,7 +64,6 @@ public class AccountController {
             dateTime += " " + time;
             dateTimeFormat += " " + timeFormat;
         }
-        
         
         //format must be dd-MM-yyyy hh:mm:ss or only dd-MM-yyyy
         SimpleDateFormat format = new SimpleDateFormat(dateTimeFormat);
@@ -69,28 +77,52 @@ public class AccountController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
+    
+    //TODO: webservice que mostra o saldo da conta em uma determinada data //using AccountEntry
+    @RequestMapping(value = "/account/{id}/saldo", method = RequestMethod.GET)
+    public ResponseEntity<AccountEntry> getBallanceAtDeterminedDate(@PathVariable("id") int id, @RequestParam(value = "date") String date, @RequestParam(value = "time", required = false) String time) {
+        String dateTimeFormat = dateFormat;
+        String dateTime = date;
+        Account account = accountService.findById(id);
+        if(time!=null) {
+            dateTime += " " + time;
+            dateTimeFormat += " " + timeFormat;
+        }
+        
+        //format must be dd-MM-yyyy hh:mm:ss or only dd-MM-yyyy
+        SimpleDateFormat format = new SimpleDateFormat(dateTimeFormat);
 
-    @RequestMapping(value = "/account", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+        try {
+            Date data = new Date(format.parse(dateTime).getTime());
+            AccountEntry entry = accountService.getAccountBallanceAtDate(account, data);
+            return new ResponseEntity(entry, HttpStatus.OK);
+        } catch (ParseException ex) {
+            Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, "Parâmetro recebido não é uma data válida");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    //until I figure out why the Owner nested object is not being desserialized I'll gave to use a request param
+    @JsonView(View.Summary.class)
+    @RequestMapping(value = "/account", method = RequestMethod.POST)
+    public ResponseEntity<Account> createAccount(@RequestBody @Valid Account account, @RequestParam(value = "owner") int ownerid) {
+        Owner owner = ownerService.findById(ownerid);
+        account.setOwner(owner);
         Account newAccount = accountService.save(account);
         return new ResponseEntity(newAccount, HttpStatus.OK);
     }
 
-    //Webservice que deleta a conta? melhor não mas tá aí pra quem quiser
-//    @RequestMapping(value = "/account/{id}", method = RequestMethod.DELETE)
-//    public ResponseEntity deleteAccount(@PathVariable("id") int id) {
-//        accountService.delete(id);
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
     //TODO: webservice que deposita/saca da conta(entries com valor negativo representam um saque)
     @RequestMapping(value = "/account/{id}", method = RequestMethod.POST)
-    public ResponseEntity depositIntoAccount(@PathVariable("id") int id, @RequestBody Entry entry) {
+    public ResponseEntity depositIntoAccount(@PathVariable("id") int id, @RequestParam(value = "quantity") Float quantity) {
+        accountService.depositIntoAccount(id, quantity);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     //TODO: webservice que transfere de uma conta para a outra
-    @RequestMapping(value = "/account/transfer/{id}", method = RequestMethod.PUT)
-    public ResponseEntity transferToAccount(@PathVariable("id") int id, @RequestBody Account account) {
+    @RequestMapping(value = "/account/{id}/transfer/{account}", method = RequestMethod.POST)
+    public ResponseEntity transferToAccount(@PathVariable("id") int id, @PathVariable("account") int targetAccountId, @RequestParam(value = "quantity") Float quantity) {
+        accountService.transferToAccount(id, targetAccountId, quantity);
         return new ResponseEntity(HttpStatus.OK);
     }
 

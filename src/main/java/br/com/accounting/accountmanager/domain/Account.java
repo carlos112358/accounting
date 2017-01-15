@@ -2,6 +2,7 @@ package br.com.accounting.accountmanager.domain;
 
 import br.com.accounting.accountmanager.views.View;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Collection;
@@ -43,15 +44,16 @@ public class Account implements Serializable {
     @Column(name = "balance")
     private Float balance;
     
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @ManyToOne
+    @JsonView(View.Summary.class)
+    @JsonProperty("owner")
+    private Owner owner;
+
     @OneToMany(mappedBy = "accountId")
     @JsonIgnore
     private Collection<AccountEntry> entryCollection;
     
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    @ManyToOne
-    @JsonView(View.Summary.class)
-    private Owner owner;
-
     @OneToMany(mappedBy = "accountId")
     @JsonIgnore
     private Collection<AccountHistory> accountHistoryCollection;
