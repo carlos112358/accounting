@@ -11,5 +11,5 @@ import java.util.Date;
  */
 public interface EntryRepository extends GenericRepository <AccountEntry, Integer> {
     
-    AccountEntry findFirstByAccountIdAndChargedDateLessThanOrderByChargedDateDesc(Account account, Date date);
+    AccountEntry findFirstByAccountIdAndChargedDateLessThanEqualOrderByChargedDateDesc(Account account, Date date);
 }

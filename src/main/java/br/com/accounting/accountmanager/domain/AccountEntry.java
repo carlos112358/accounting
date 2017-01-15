@@ -5,6 +5,7 @@
  */
 package br.com.accounting.accountmanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -52,10 +53,10 @@ public class AccountEntry implements Serializable {
     @Column(name = "quantity")
     private Float quantity;
     @Column(name = "charged_date")
-    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="dd-MM-yyyy hh:mm:ss", timezone="Brazil/East")
     private Date chargedDate;
     @Column(name = "booking_date")
-    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="dd-MM-yyyy hh:mm:ss", timezone="Brazil/East")
     private Date bookingDate;
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne

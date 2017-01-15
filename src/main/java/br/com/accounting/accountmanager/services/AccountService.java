@@ -73,7 +73,7 @@ public class AccountService {
     
     //USES ACCOUNT ENTRY
     public AccountEntry getAccountBallanceAtDate(Account account, Date date) {
-        return entryRepository.findFirstByAccountIdAndChargedDateLessThanOrderByChargedDateDesc(account, date);
+        return entryRepository.findFirstByAccountIdAndChargedDateLessThanEqualOrderByChargedDateDesc(account, date);
     }
 
     public AccountEntry depositIntoAccount(int id, Float value) {
