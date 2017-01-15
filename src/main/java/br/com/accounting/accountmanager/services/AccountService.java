@@ -13,8 +13,12 @@ import br.com.accounting.accountmanager.domain.Account;
 import br.com.accounting.accountmanager.domain.AccountHistory;
 import br.com.accounting.accountmanager.domain.AccountEntry;
 import br.com.accounting.accountmanager.domain.AccountTransaction;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +39,7 @@ public class AccountService {
 
     @Autowired
     private EntryRepository entryRepository;
-    
+
     @Autowired
     private TransactionRepository transactionRepository;
 
@@ -62,45 +66,54 @@ public class AccountService {
         }
     }
 
-    public List<AccountHistory> getAccountHistory(int id) {
-        return historyRepository.findByAccountId(id);
+    public List<AccountEntry> getAccountHistory(int id, int period) throws ParseException {
+        Account account = findById(id);
+        SimpleDateFormat format2 = new SimpleDateFormat("dd-MM-yyyy", new Locale("pt", "BR"));
+        Date endDate = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(endDate);
+        cal.add(Calendar.DAY_OF_YEAR, -period);
+        String strDate = format2.format(cal.getTime()) + " 00:00:00";
+        Date startDate = format2.parse(strDate);
+
+        return entryRepository.findByAccountIdAndChargedDateBetween(account, startDate, endDate);
     }
-    
+
     //USES ACCOUNT HISTORY
     public AccountHistory getAccountBallanceByDate(int id, Date date) {
         return historyRepository.findFirstByAccountIdAndChangeDateLessThanOrderByChangeDateDesc(id, date);
     }
-    
+
     //USES ACCOUNT ENTRY
     public AccountEntry getAccountBallanceAtDate(Account account, Date date) {
         return entryRepository.findFirstByAccountIdAndChargedDateLessThanEqualOrderByChargedDateDesc(account, date);
     }
 
     public AccountEntry depositIntoAccount(int id, Float value) {
-        
+
         Account account = findById(id);
-                
+
         if (account.getId() < 0) {
             return null;
         }
 
         Date currentDate = new Date();
 
-        float balance = account.getBalance()+value;
+        float balance = account.getBalance() + value;
         //first we create an entry object for this ballance
         AccountEntry entry = new AccountEntry();
         entry.setQuantity(value);
         entry.setBookingDate(currentDate);
-        
+
         //for now we'll work with the current date
         entry.setChargedDate(currentDate);
         entry.setAccountBalance(value);
         entry.setAccountBalance(balance);
         entry.setAccountId(account);
         entry = entryRepository.save(entry);
-        
+
         account.setBalance(balance);
-        
+
         //we're using this class just cause
         AccountHistory history = new AccountHistory();
         history.setAccountId(id);
@@ -111,11 +124,11 @@ public class AccountService {
         accountRepository.save(account);
         return entry;
     }
-    
-    public void transferToAccount(int originAccountid, int destinyAccountid, Float value){
+
+    public void transferToAccount(int originAccountid, int destinyAccountid, Float value) {
         AccountEntry withdraw = depositIntoAccount(originAccountid, value * -1);
         AccountEntry addition = depositIntoAccount(destinyAccountid, value);
-        
+
         AccountTransaction transaction = new AccountTransaction();
         transaction.setEntry(addition);
         transaction.setCounterEntry(withdraw);
