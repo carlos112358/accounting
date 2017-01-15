@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.validation.Valid;
@@ -128,11 +129,11 @@ public class AccountController {
 
     //TODO: webservice que mostra o extrato por períodos
     @RequestMapping(value = "/account/{id}/history", method = RequestMethod.GET)
-    public ResponseEntity<List<AccountEntry>> getAccountHistory(@PathVariable("id") int id, @RequestParam(value = "period") int period) {
+    public ResponseEntity<Map<String, List<AccountEntry>>> getAccountHistory(@PathVariable("id") int id, @RequestParam(value = "period") int period) {
         if (period < 0) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        List<AccountEntry> historyList;
+        Map<String, List<AccountEntry>> historyList;
         try {
             historyList = accountService.getAccountHistory(id, period);
             return new ResponseEntity(historyList, HttpStatus.OK);

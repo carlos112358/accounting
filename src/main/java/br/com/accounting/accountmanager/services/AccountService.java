@@ -15,10 +15,14 @@ import br.com.accounting.accountmanager.domain.AccountEntry;
 import br.com.accounting.accountmanager.domain.AccountTransaction;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +70,7 @@ public class AccountService {
         }
     }
 
-    public List<AccountEntry> getAccountHistory(int id, int period) throws ParseException {
+    public Map<String, List<AccountEntry>> getAccountHistory(int id, int period) throws ParseException {
         Account account = findById(id);
         SimpleDateFormat format2 = new SimpleDateFormat("dd-MM-yyyy", new Locale("pt", "BR"));
         Date endDate = new Date();
@@ -75,8 +79,30 @@ public class AccountService {
         cal.add(Calendar.DAY_OF_YEAR, -period);
         String strDate = format2.format(cal.getTime()) + " 00:00:00";
         Date startDate = format2.parse(strDate);
-
-        return entryRepository.findByAccountIdAndChargedDateBetween(account, startDate, endDate);
+        
+        List<AccountEntry> entryList = entryRepository.findByAccountIdAndChargedDateBetween(account, startDate, endDate);
+        
+        Map<String, List<AccountEntry>> historyMap = new HashMap<>();
+        
+        //montamos um mapa com o dia e inserimos em cada dia as movimentações feitas na conta
+        entryList.forEach(e ->{
+            String day = format2.format(e.getChargedDate());
+            if(historyMap.get(day) == null){
+                List<AccountEntry> list = new ArrayList<>();
+                list.add(e);
+                historyMap.put(day, list);
+            } else {
+                historyMap.get(day).add(e);
+            }
+        });
+        
+        //agora precisamos ordenar o mapa pelas chaves
+        Map<String, List<AccountEntry>> sortedHistoryMap = new LinkedHashMap<>();
+        historyMap.entrySet().stream()
+                .sorted(Map.Entry.<String, List<AccountEntry>>comparingByKey())
+                .forEachOrdered(x -> sortedHistoryMap.put(x.getKey(), x.getValue()));
+        
+        return sortedHistoryMap;
     }
 
     //USES ACCOUNT HISTORY
