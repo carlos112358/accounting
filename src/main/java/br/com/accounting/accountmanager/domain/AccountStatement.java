@@ -5,6 +5,7 @@
  */
 package br.com.accounting.accountmanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  * Classe para encapsular as entradas do extrato
  */
 public class AccountStatement implements Comparable<AccountStatement> {
-
+    @JsonFormat(pattern="dd-MM-yyyy hh:mm:ss", timezone="Brazil/East")
     private Date day;//dd-MM-yyyy
     private float balance;
     private List<AccountEntry> entries;//movimentações do dia
