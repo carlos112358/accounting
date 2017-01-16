@@ -56,32 +56,31 @@ public class AccountController {
         }
     }
 
-    //TODO: webservice que mostra o saldo da conta em uma determinada data //using Accounthistory
+//    @RequestMapping(value = "/account/{id}/balance", method = RequestMethod.GET)
+//    public ResponseEntity<AccountHistory> getBallanceAtCertainDate(@PathVariable("id") int id, @RequestParam(value = "date") String date, @RequestParam(value = "time", required = false) String time) {
+//        String dateTimeFormat = dateFormat;
+//        String dateTime = date;
+//
+//        if (time != null) {
+//            dateTime += " " + time;
+//            dateTimeFormat += " " + timeFormat;
+//        }
+//
+//        //format must be dd-MM-yyyy hh:mm:ss or only dd-MM-yyyy
+//        SimpleDateFormat format = new SimpleDateFormat(dateTimeFormat);
+//
+//        try {
+//            Date data = new Date(format.parse(dateTime).getTime());
+//            AccountHistory account = accountService.getAccountBallanceByDate(id, data);
+//            return new ResponseEntity(account, HttpStatus.OK);
+//        } catch (ParseException ex) {
+//            Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, "Parâmetro recebido não é uma data válida");
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
+    //webservice que mostra o saldo da conta em uma determinada data //using AccountEntry
     @RequestMapping(value = "/account/{id}/balance", method = RequestMethod.GET)
-    public ResponseEntity<AccountHistory> getBallanceAtCertainDate(@PathVariable("id") int id, @RequestParam(value = "date") String date, @RequestParam(value = "time", required = false) String time) {
-        String dateTimeFormat = dateFormat;
-        String dateTime = date;
-
-        if (time != null) {
-            dateTime += " " + time;
-            dateTimeFormat += " " + timeFormat;
-        }
-
-        //format must be dd-MM-yyyy hh:mm:ss or only dd-MM-yyyy
-        SimpleDateFormat format = new SimpleDateFormat(dateTimeFormat);
-
-        try {
-            Date data = new Date(format.parse(dateTime).getTime());
-            AccountHistory account = accountService.getAccountBallanceByDate(id, data);
-            return new ResponseEntity(account, HttpStatus.OK);
-        } catch (ParseException ex) {
-            Logger.getLogger(AccountController.class.getName()).log(Level.SEVERE, "Parâmetro recebido não é uma data válida");
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    //TODO: webservice que mostra o saldo da conta em uma determinada data //using AccountEntry
-    @RequestMapping(value = "/account/{id}/saldo", method = RequestMethod.GET)
     public ResponseEntity<AccountEntry> getBallanceAtDeterminedDate(@PathVariable("id") int id, @RequestParam(value = "date") String date, @RequestParam(value = "time", required = false) String time) {
         String dateTimeFormat = dateFormat;
         String dateTime = date;

@@ -52,7 +52,9 @@ public class AccountService {
     //cria/atualiza conta
     @Transactional
     public Account save(Account account) {
-        return accountRepository.save(account);
+        Account returnAccount = accountRepository.save(account);
+        depositIntoAccount(returnAccount.getId(), returnAccount.getBalance());
+        return returnAccount;
     }
 
     //lista todas as contas do usuário
