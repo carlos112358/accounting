@@ -58,7 +58,7 @@ public class AccountService {
         Account returnAccount = accountRepository.save(account);
         if (balance!=0) {
             //depósito para ser possível consultar o saldo da conta no dia da criação dela
-            depositIntoAccount(returnAccount.getId(), returnAccount.getBalance());
+            depositIntoAccount(returnAccount.getId(), balance);
         }
         return returnAccount;
     }
