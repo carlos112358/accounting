@@ -40,10 +40,4 @@ public class OwnerController {
     public ResponseEntity deleteOwner(@PathVariable("id") int id) {
         return new ResponseEntity(HttpStatus.OK);
     }
-    
-    //TODO: webservice que atualiza usuário
-    @RequestMapping(value = "/owner", method = RequestMethod.PUT)
-    public ResponseEntity updateOwner(@RequestBody Owner owner) {
-        return new ResponseEntity(HttpStatus.OK);
-    }
 }
