@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * Classe para encapsular as entradas do extrato
  */
 public class AccountStatement implements Comparable<AccountStatement> {
-    @JsonFormat(pattern="dd-MM-yyyy hh:mm:ss", timezone="Brazil/East")
+    @JsonFormat(pattern="dd-MM-yyyy", timezone="Brazil/East")
     private Date day;//dd-MM-yyyy
     private float balance;
     private List<AccountEntry> entries;//movimentações do dia
