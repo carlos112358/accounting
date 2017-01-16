@@ -130,7 +130,7 @@ public class AccountController {
 
     //TODO: webservice que mostra o extrato por períodos
     @RequestMapping(value = "/account/{id}/history", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, List<AccountEntry>>> getAccountHistory(@PathVariable("id") int id, @RequestParam(value = "period") int period) {
+    public ResponseEntity<Map<String, List<AccountStatement>>> getAccountHistory(@PathVariable("id") int id, @RequestParam(value = "period") int period) {
         if (period < 0) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

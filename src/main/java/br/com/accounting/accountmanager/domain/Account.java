@@ -120,7 +120,7 @@ public class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "br.com.accounting.accountmanager.domain.Account[ id=" + id + " ]";
+        return "Account[ id=" + id + " ]";
     }
 
     @XmlTransient
