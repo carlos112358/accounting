@@ -52,6 +52,8 @@ public class AccountService {
     //cria/atualiza conta
     @Transactional
     public Account save(Account account) {
+        float balance = account.getBalance();
+        account.setBalance(0f);
         Account returnAccount = accountRepository.save(account);
         depositIntoAccount(returnAccount.getId(), returnAccount.getBalance());
         return returnAccount;
