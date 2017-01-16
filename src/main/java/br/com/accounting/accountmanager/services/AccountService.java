@@ -53,9 +53,13 @@ public class AccountService {
     @Transactional
     public Account save(Account account) {
         float balance = account.getBalance();
+        //precisa ser zerado pois será feito um depósito nela depois para registrar a operação
         account.setBalance(0f);
         Account returnAccount = accountRepository.save(account);
-        depositIntoAccount(returnAccount.getId(), returnAccount.getBalance());
+        if (balance!=0) {
+            //depósito para ser possível consultar o saldo da conta no dia da criação dela
+            depositIntoAccount(returnAccount.getId(), returnAccount.getBalance());
+        }
         return returnAccount;
     }
 
@@ -85,15 +89,15 @@ public class AccountService {
         cal.add(Calendar.DAY_OF_YEAR, -period);
         String strDate = format2.format(cal.getTime()) + " 00:00:00";
         Date startDate = format2.parse(strDate);
-        
+
         List<AccountEntry> entryList = entryRepository.findByAccountIdAndChargedDateBetween(account, startDate, endDate);
-        
+
         Map<String, List<AccountEntry>> historyMap = new HashMap<>();
-        
+
         //montamos um mapa com o dia e inserimos em cada dia as movimentações feitas na conta
-        entryList.forEach(e ->{
+        entryList.forEach(e -> {
             String day = format2.format(e.getChargedDate());
-            if(historyMap.get(day) == null){
+            if (historyMap.get(day) == null) {
                 List<AccountEntry> list = new ArrayList<>();
                 list.add(e);
                 historyMap.put(day, list);
@@ -101,23 +105,23 @@ public class AccountService {
                 historyMap.get(day).add(e);
             }
         });
-        
+
         //agora precisamos ordenar o mapa pelas chaves
         Map<String, List<AccountEntry>> sortedHistoryMap = new LinkedHashMap<>();
         historyMap.entrySet().stream()
                 .sorted(Map.Entry.<String, List<AccountEntry>>comparingByKey())
                 .forEachOrdered(x -> sortedHistoryMap.put(x.getKey(), x.getValue()));
-        
+
         //utilizando a nova estrutura
-        List <AccountStatement> accountStatement= new ArrayList<>();
-        
-        for(String key:sortedHistoryMap.keySet()){
+        List<AccountStatement> accountStatement = new ArrayList<>();
+
+        for (String key : sortedHistoryMap.keySet()) {
             AccountStatement statement = new AccountStatement();
             statement.setEntries(sortedHistoryMap.get(key));
             statement.retrieveRetrieveData();
             accountStatement.add(statement);
         };
-        
+
         Collections.reverse(accountStatement);
         return accountStatement;
     }
