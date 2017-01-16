@@ -114,8 +114,8 @@ public class AccountController {
     }
 
     //TODO: webservice que deposita/saca da conta(entries com valor negativo representam um saque)
-    @RequestMapping(value = "/account/{id}", method = RequestMethod.POST)
-    public ResponseEntity depositIntoAccount(@PathVariable("id") int id, @RequestParam(value = "quantity") Float quantity) {
+    @RequestMapping(value = "/account/{id}/deposit/{quantity}", method = RequestMethod.POST)
+    public ResponseEntity depositIntoAccount(@PathVariable("id") int id, @PathVariable("quantity") Float quantity) {
         accountService.depositIntoAccount(id, quantity);
         return new ResponseEntity(HttpStatus.OK);
     }
