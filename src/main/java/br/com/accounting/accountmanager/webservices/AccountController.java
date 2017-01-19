@@ -2,7 +2,6 @@ package br.com.accounting.accountmanager.webservices;
 
 import br.com.accounting.accountmanager.domain.Account;
 import br.com.accounting.accountmanager.domain.AccountEntry;
-import br.com.accounting.accountmanager.domain.AccountHistory;
 import br.com.accounting.accountmanager.domain.AccountStatement;
 import br.com.accounting.accountmanager.domain.Owner;
 import br.com.accounting.accountmanager.services.AccountService;
